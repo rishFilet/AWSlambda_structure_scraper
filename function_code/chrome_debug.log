@@ -1,0 +1,53 @@
+[0602/174007.251938:WARNING:resource_bundle.cc(368)] locale_file_path.empty() for locale 
+[0602/174007.255909:WARNING:resource_bundle.cc(368)] locale_file_path.empty() for locale 
+[0602/174007.256020:VERBOSE1:zygote_main_linux.cc(602)] ZygoteMain: initializing 0 fork delegates
+[0602/174007.256228:INFO:cpu_info.cc(50)] Available number of cores: 12
+[0602/174007.257001:ERROR:file_path_watcher_linux.cc(260)] inotify_init() failed: Too many open files (24)
+[0602/174007.258317:ERROR:gpu_process_transport_factory.cc(1019)] Lost UI shared context.
+[0602/174007.258375:VERBOSE1:webrtc_internals.cc(110)] Could not get the download directory.
+[0602/174007.261153:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Google 'Argon2018' log
+[0602/174007.261187:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Google 'Argon2019' log
+[0602/174007.261194:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Google 'Argon2020' log
+[0602/174007.261199:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Google 'Argon2021' log
+[0602/174007.261203:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Google 'Aviator' log
+[0602/174007.261208:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Google 'Icarus' log
+[0602/174007.261212:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Google 'Pilot' log
+[0602/174007.261216:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Google 'Rocketeer' log
+[0602/174007.261220:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Google 'Skydiver' log
+[0602/174007.261224:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Cloudflare 'Nimbus2018' Log
+[0602/174007.261229:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Cloudflare 'Nimbus2019' Log
+[0602/174007.261233:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Cloudflare 'Nimbus2020' Log
+[0602/174007.261237:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Cloudflare 'Nimbus2021' Log
+[0602/174007.261242:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: DigiCert Log Server
+[0602/174007.261246:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: DigiCert Log Server 2
+[0602/174007.261250:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Symantec log
+[0602/174007.261255:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Symantec 'Vega' log
+[0602/174007.261259:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Symantec 'Sirius' log
+[0602/174007.261264:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: WoSign log
+[0602/174007.261268:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Venafi Gen2 CT log
+[0602/174007.261281:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: CNNIC CT log
+[0602/174007.261297:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: StartCom log
+[0602/174007.261304:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Comodo 'Sabre' CT log
+[0602/174007.261310:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Comodo 'Mammoth' CT log
+[0602/174007.261314:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Izenpe log
+[0602/174007.261332:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Venafi log
+[0602/174007.261336:VERBOSE1:multi_log_ct_verifier.cc(75)] Adding CT log: Certly.IO log
+[0602/174007.261359:VERBOSE1:proxy_service.cc(957)] PAC support disabled because there is no system implementation
+[0602/174007.262006:VERBOSE1:gpu_init.cc(342)] gl::init::InitializeGLNoExtensionsOneOff failed
+[0602/174007.263955:WARNING:histograms.cc(40)] Started multiple compositor clients (Browser, Renderer) in one process. Some metrics will be disabled.
+[0602/174038.418997:VERBOSE2:ThreadState.cpp(522)] [state:0x64812a0] ScheduleGCIfNeeded
+[0602/174038.419124:VERBOSE2:ThreadState.cpp(522)] [state:0x64812a0] ScheduleGCIfNeeded
+[0602/174038.419203:VERBOSE2:ThreadState.cpp(522)] [state:0x64812a0] ScheduleGCIfNeeded
+[0602/174038.419363:VERBOSE2:ThreadState.cpp(522)] [state:0x64812a0] ScheduleGCIfNeeded
+[0602/174038.419407:VERBOSE2:ThreadState.cpp(522)] [state:0x64812a0] ScheduleGCIfNeeded
+[0602/174038.419494:VERBOSE2:ThreadState.cpp(522)] [state:0x64812a0] ScheduleGCIfNeeded
+[0602/174038.420405:VERBOSE2:ThreadState.cpp(522)] [state:0x64812a0] ScheduleGCIfNeeded
+[0602/174709.255279:WARNING:resource_bundle.cc(358)] locale_file_path.empty() for locale 
+[0602/174709.255473:INFO:cpu_info.cc(46)] Available number of cores: 12
+[0602/174709.255520:VERBOSE1:zygote_main_linux.cc(217)] ZygoteMain: initializing 0 fork delegates
+[0602/174730.811038:WARNING:resource_bundle.cc(358)] locale_file_path.empty() for locale 
+[0602/174730.811212:INFO:cpu_info.cc(46)] Available number of cores: 12
+[0602/174730.811274:VERBOSE1:zygote_main_linux.cc(217)] ZygoteMain: initializing 0 fork delegates
+[0602/174736.010612:WARNING:resource_bundle.cc(358)] locale_file_path.empty() for locale 
+[0602/174736.010786:INFO:cpu_info.cc(46)] Available number of cores: 12
+[0602/174736.010844:VERBOSE1:zygote_main_linux.cc(217)] ZygoteMain: initializing 0 fork delegates

@@ -1,0 +1,17 @@
+{
+    "test_data" : {
+        "url": "https://www.brainyquote.com/",
+        "search_query": "Bruce Lee",
+        "search_box_id": "hmSearch",
+        "wait_for_element": "quotesList",
+        "element_to_find": "m-brick"
+    },
+    "site1": {
+        "url": "https://www.bein.net/ar/%D8%AC%D8%AF%D9%88%D9%84-%D8%A7%D9%84%D8%A8%D8%AB/",
+        "search_query": "",
+        "search_box_id": "",
+        "wait_for_element":"slider",
+        "element_to_find": ""
+    }
+
+}
