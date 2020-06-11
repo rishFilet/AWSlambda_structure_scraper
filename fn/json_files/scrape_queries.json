@@ -12,6 +12,13 @@
         "search_box_id": "",
         "wait_for_element":"slider",
         "element_to_find": ""
+    },
+    "site2": {
+        "url": "https://www.osn.com/en-eg/watch/tv-schedule",
+        "search_query": "",
+        "search_box_id": "",
+        "wait_for_element": "main-tv-schedule-area",
+        "element_to_find": ""
     }
 
 }

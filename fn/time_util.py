@@ -59,3 +59,19 @@ def convert_to_ms(formatted_time_to_convert):
     ms = time_obj.timestamp()*1000
     return ms
 
+def convert_site_two_duration_to_ms(time_string):
+    if "Hour" in time_string:
+        hour_string = "Hour"
+    if "Hours" in time_string:
+        hour_string = "Hours"
+    time_formatted = time_string.replace(hour_string, ":")
+    if "Minutes" in time_string:
+        time_sans_min = time_formatted.replace('Minutes', '')
+    else:
+        time_sans_min = time_formatted.replace(":", "")
+    final_time = time_sans_min.strip()
+    if ":" in final_time:
+        h, m = final_time.split(":")
+    else:
+        h, m = final_time, '0'
+    return (int(h.strip())*3600*1000)+(int(m.strip())*60*1000)

@@ -7,6 +7,7 @@ import selenium.webdriver.support.expected_conditions as EC
 from selenium.common import exceptions as e
 import time
 import os
+import sys
 
 
 class SeleniumScraper:
@@ -19,11 +20,16 @@ class SeleniumScraper:
         self.find_by_class = find_by_class
         self.find_by_id = find_by_id
         self.chrome_options = webdriver.ChromeOptions()
+        #When uploading to lambda, these need to be changed to /opt/chrome/..
+        self.binary_path = os.getenv("binary_path")
+        self.executable = os.getenv("executable")
+        sys.path.append(self.executable)
+
         self.chrome_options.add_argument('--headless')
         self.chrome_options.add_argument('--no-sandbox')
         self.chrome_options.add_argument('--disable-gpu')
         self.chrome_options.add_argument('--disable-dev-shm-usage')
-        self.chrome_options.add_argument('--window-size=1280x1696')
+        #self.chrome_options.add_argument('--window-size=1280x1696')
         self.chrome_options.add_argument('--user-data-dir=/tmp/user-data')
         self.chrome_options.add_argument('--hide-scrollbars')
         self.chrome_options.add_argument('--enable-logging')
@@ -36,11 +42,23 @@ class SeleniumScraper:
         self.chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
         self.chrome_options.add_argument(
             'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
-        self.chrome_options.binary_location = "/opt/chrome/headless-chromium"
-        self.webdriver = webdriver.Chrome(executable_path="/opt/chrome/chromedriver", chrome_options=self.chrome_options)
+        self.chrome_options.binary_location = self.binary_path
+        self.webdriver = webdriver.Chrome(executable_path=self.executable, options=self.chrome_options)
         # retrive url in headless browser
         self.webdriver.get(self.url)
         self.wait = WebDriverWait(self.webdriver, 10)
+
+    def get_one_element(self):
+        self.wait_element_appear(self.wait_for_element)
+        if self.find_by_class:
+            # element_to_find variable here is the class name or ID or xpath that is seen in the html inspection
+            return self.webdriver.find_element_by_class_name(
+                self.element_to_find)
+        elif self.find_by_id:
+            return self.webdriver.find_element_by_id(
+                self.element_to_find)
+        else:
+            raise Exception("Specify if to find element by class or Id")
 
     def list_elements_on_page(self):
         # find search box
@@ -59,6 +77,10 @@ class SeleniumScraper:
                 self.element_to_find)
         else:
             raise Exception("Specify if to find element by class or Id")
+    
+    def check_if_displayed(self, element):
+        element_to_check = self.webdriver.find_element_by_id(element)
+        return element_to_check.is_displayed()
 
     def list_elements_by_tag(self, page_data=None):
         if page_data is None:
