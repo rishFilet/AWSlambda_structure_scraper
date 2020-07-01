@@ -62,16 +62,24 @@ def convert_to_ms(formatted_time_to_convert):
 def convert_site_two_duration_to_ms(time_string):
     if "Hour" in time_string:
         hour_string = "Hour"
-    if "Hours" in time_string:
-        hour_string = "Hours"
-    time_formatted = time_string.replace(hour_string, ":")
-    if "Minutes" in time_string:
-        time_sans_min = time_formatted.replace('Minutes', '')
+        time_formatted = time_string.replace(hour_string, ":")
+        if "Hours" in time_string:
+            hour_string = "Hours"
+            time_formatted = time_string.replace(hour_string, ":")
+    else:
+        hour_string = None
+        time_formatted = time_string
+    if "Minute" in time_string:
+        time_sans_min = time_formatted.replace('Minute', '')
+        if "Minutes" in time_string:
+            time_sans_min = time_formatted.replace('Minutes', '')
     else:
         time_sans_min = time_formatted.replace(":", "")
     final_time = time_sans_min.strip()
     if ":" in final_time:
         h, m = final_time.split(":")
+    elif hour_string is None:
+        h, m = '0', final_time
     else:
         h, m = final_time, '0'
     return (int(h.strip())*3600*1000)+(int(m.strip())*60*1000)

@@ -32,13 +32,18 @@ def handler(event, context):
         s1.sel_obj.stop_driver()
     if site == "site2":
         site = event['site']
-        s2 = SiteTwo()
+        start_point = int(event['start'])
+        end_point = int(event['end'])
+        s2 = SiteTwo(max_workers=int(event['max_workers']), batch_size=int(event['batch_size']))
         print("\nScraping started for {}".format(site))
-        site2_master_list = s2.get_items_in_channels(test_run)
+        site2_master_list = s2.get_items_in_channels(test_run, start_point, end_point)
         all_show_objects = utils.convert_scraped_data_to_json_site_two(
             site2_master_list)
         site_dict[site].extend(all_show_objects)
-        s2.sel_obj.stop_driver()
+        try:
+            s2.sel_obj.stop_driver()
+        except Exception as e:
+            print(f"Driver could not be stopped due to {e}")
     #utils.write_master_list_json(site_dict, "{}_test_data_before_master_list.json".format(site), site)
     print("Converting master list to show Objects..Final Step!")
     show_objects = utils.convert_master_list_to_show_obj(
@@ -57,5 +62,11 @@ if __name__ == "__main__":
     # Setting the environment variables for the chromedriver and headless-chromium
     os.environ["binary_path"] = os.getcwd()+"/venv/chrome/headless-chromium"
     os.environ["executable"] = os.getcwd()+"/venv/chrome/chromedriver"
-    handler("site1", None)
-    handler("site2", None)
+    #handler({"site": "site1", "output": "", "test_run": "1"}, None)
+    handler({"site": "site2", "output": "", "test_run": "1", "start":"0", "end":"600", "max_workers":"60", "batch_size":"50"}, None)
+    handler({"site": "site2", "output": "", "test_run": "1",
+             "start": "601", "end": "1200"}, None)
+    handler({"site": "site2", "output": "", "test_run": "1",
+             "start": "1201", "end": "1800"}, None)
+    handler({"site": "site2", "output": "", "test_run": "1",
+             "start": "1801", "end": "3000"}, None)

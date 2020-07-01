@@ -90,25 +90,29 @@ def convert_scraped_data_to_json_site_two(shows_list):
     current_timezone = tu.get_current_timezone()
     ymd = tu.get_ymd()
     all_show_objects = []
+    day = dt.today().strftime('%A')
     for show in shows_list:
-        json_format = copy.deepcopy(
-            json_read_from_file('time_slot_template.json'))
-        json_format["showName"] = show["title"]
-        start_time_GMT = tu.convert_from_US_to_GMT(
-            current_timezone, show["start_time"], ymd)
-        json_format["startTime"] = tu.convert_to_ms(start_time_GMT)
-        json_format["duration"] = tu.convert_site_two_duration_to_ms(
-            show["duration"])
-        json_format["endTime"] = json_format["startTime"] + json_format["duration"]
-        json_format["timestampKey"] = json_format["startTime"]
-        json_format["type"] = show["genre"]
-        json_format["channelLogo"] = show["channel_logo"]
-        if show["channel_logo"] != '':
-            json_format["channel"] = json_format["channelName"] = show["channel_logo"].split(
-                '/')[::-1][0].split('.')[0]
-        json_format["ttl"] = json_format["endTime"]
-        all_show_objects.append(json_format)
+        if show["day"].replace(':', '') == day:
+            json_format = copy.deepcopy(
+                json_read_from_file('time_slot_template.json'))
+            json_format["showName"] = show["title"]
+            start_time_GMT = tu.convert_from_US_to_GMT(
+                current_timezone, show["start_time"], ymd)
+            json_format["startTime"] = tu.convert_to_ms(start_time_GMT)
+            json_format["duration"] = tu.convert_site_two_duration_to_ms(
+                show["duration"])
+            json_format["endTime"] = json_format["startTime"] + \
+                json_format["duration"]
+            json_format["timestampKey"] = json_format["startTime"]
+            json_format["type"] = show["genre"]
+            json_format["channelLogo"] = show["channel_logo"]
+            if show["channel_logo"] != '':
+                json_format["channel"] = json_format["channelName"] = show["channel_logo"].split(
+                    '/')[::-1][0].split('.')[0]
+            json_format["ttl"] = json_format["endTime"]
+            all_show_objects.append(json_format)
     return all_show_objects
+
 
 def convert_master_list_to_show_obj(master_list, site):
     channel_dict = {}
@@ -119,7 +123,7 @@ def convert_master_list_to_show_obj(master_list, site):
         try:
             channel_dict[item["channel"]].append(item)
         except KeyError:
-            channel_dict.update({item["channel"]:[]})
+            channel_dict.update({item["channel"]: []})
             channel_dict[item["channel"]].append(item)
     # Sorting each channel by start time
     for channel_name, item_array in channel_dict.items():
@@ -151,11 +155,14 @@ def convert_master_list_to_show_obj(master_list, site):
     return show_objects
 
 # Currently not being used as the check for previous times is done by looking at the x position of the show elements
+
+
 def filter_previous_times(current_time_formatted, end_time):
     if (current_time_formatted.hour == end_time.hour and current_time_formatted.minute < end_time.minute) or (current_time_formatted.day == end_time.day and current_time_formatted.hour < end_time.hour) or (current_time_formatted.month == end_time.month and current_time_formatted.day < end_time.day) or (current_time_formatted.day < end_time.day) or (current_time_formatted.hour < end_time.hour) or (current_time_formatted.minute < end_time.minute):
         return True
     else:
         return False
+
 
 def sort_channel_by_start_time(arr):
     # TODO : Add tutorial on insertion sort
@@ -169,6 +176,7 @@ def sort_channel_by_start_time(arr):
         arr[pos+1] = cursor
     return arr
 
+
 def sort_img_elements(arr):
     # Insertion sort algorithm
     for i in range(1, len(arr)):
@@ -179,3 +187,10 @@ def sort_img_elements(arr):
             j -= 1
         arr[j+1] = key
     return arr
+
+def remove_dupe_dicts(list_to_check):
+    list_of_strings = [json.dumps(d, sort_keys=True)
+                        for d in list_to_check]
+
+    list_of_strings = set(list_of_strings)
+    return [json.loads(s) for s in list_of_strings]

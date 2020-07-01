@@ -1,13 +1,11 @@
+import os
+import sys
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 import selenium.webdriver.support.expected_conditions as EC
 from selenium.common import exceptions as e
-import time
-import os
-import sys
 
 
 class SeleniumScraper:
@@ -24,29 +22,33 @@ class SeleniumScraper:
         self.binary_path = os.getenv("binary_path")
         self.executable = os.getenv("executable")
         sys.path.append(self.executable)
-
         self.chrome_options.add_argument('--headless')
         self.chrome_options.add_argument('--no-sandbox')
-        self.chrome_options.add_argument('--disable-gpu')
+        #self.chrome_options.add_argument('--disable-gpu')
         self.chrome_options.add_argument('--disable-dev-shm-usage')
-        #self.chrome_options.add_argument('--window-size=1280x1696')
-        self.chrome_options.add_argument('--user-data-dir=/tmp/user-data')
+        self.chrome_options.add_argument('--start-maximized')
+        self.chrome_options.add_argument('--window-size=1920, 1080')
         self.chrome_options.add_argument('--hide-scrollbars')
         self.chrome_options.add_argument('--enable-logging')
         self.chrome_options.add_argument('--log-level=0')
         self.chrome_options.add_argument('--v=99')
         self.chrome_options.add_argument('--single-process')
-        self.chrome_options.add_argument('--data-path=/tmp/data-path')
+        #self.chrome_options.add_argument('--data-path=/tmp/data-path')
         self.chrome_options.add_argument('--ignore-certificate-errors')
-        self.chrome_options.add_argument('--homedir=/tmp')
-        self.chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
-        self.chrome_options.add_argument(
-            'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
+        #self.chrome_options.add_argument('--homedir=/tmp')
+        #self.chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
+        # self.chrome_options.add_argument(
+        #     'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
         self.chrome_options.binary_location = self.binary_path
         self.webdriver = webdriver.Chrome(executable_path=self.executable, options=self.chrome_options)
         # retrive url in headless browser
-        self.webdriver.get(self.url)
-        self.wait = WebDriverWait(self.webdriver, 10)
+        self.webdriver.set_page_load_timeout(90)
+        try:
+            self.webdriver.get(self.url)
+        except e.TimeoutException as msg:
+            self.webdriver.quit()
+            raise e.TimeoutException(msg=msg)
+        self.wait = WebDriverWait(self.webdriver, 8)
 
     def get_one_element(self):
         self.wait_element_appear(self.wait_for_element)
