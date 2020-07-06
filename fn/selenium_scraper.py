@@ -33,7 +33,7 @@ class SeleniumScraper:
         self.chrome_options.add_argument('--log-level=0')
         self.chrome_options.add_argument('--v=99')
         self.chrome_options.add_argument('--single-process')
-        #self.chrome_options.add_argument('--data-path=/tmp/data-path')
+        self.chrome_options.add_argument('--data-path=/tmp/data-path')
         self.chrome_options.add_argument('--ignore-certificate-errors')
         #self.chrome_options.add_argument('--homedir=/tmp')
         #self.chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
