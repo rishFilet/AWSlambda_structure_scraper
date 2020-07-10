@@ -74,6 +74,7 @@ class SeleniumScraper:
         if self.search_query is not None and self.search_query != "":
             search = self.webdriver.find_element_by_id(self.search_id)
             search.send_keys(self.search_query + Keys.RETURN)
+            self.wait_for_element = "quotesList"
 
         self.wait_element_appear(self.wait_for_element)
 
@@ -108,8 +109,9 @@ class SeleniumScraper:
             try:
                 self.wait.until(EC.presence_of_element_located(
                     (By.CLASS_NAME, self.wait_for_element)))
-            except e.TimeoutException:
+            except e.TimeoutException as te:
                 print("Could not locate element using presence by id nor class")
+                raise te
 
     def wait_element_appear(self, element, by_id=False, by_class=False, to_click=False, to_be_visible=False):
         if by_id or self.find_by_id:

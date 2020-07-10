@@ -3,7 +3,7 @@
         "url": "https://www.brainyquote.com/",
         "search_query": "Bruce Lee",
         "search_box_id": "hmSearch",
-        "wait_for_element": "quotesList",
+        "wait_for_element": "q-splash-bn",
         "element_to_find": "m-brick"
     },
     "site1": {

@@ -28,21 +28,32 @@ def get_scrape_data(site):
 
 def create_scraper_object(site, click_item=None, click_wait_for=None):
     data = get_scrape_data(site)
-    obj = sel_sc(url=data["url"], search_query=data["search_query"], search_id=data["search_box_id"],
-                 wait_for_element=data["wait_for_element"], element_to_find=data["element_to_find"])
-    obj.wait_for_element_presence()
-    if click_item is not None:
+    retry = 0
+    while retry < 3:
+        obj = sel_sc(url=data["url"], search_query=data["search_query"], search_id=data["search_box_id"],
+                    wait_for_element=data["wait_for_element"], element_to_find=data["element_to_find"])
         try:
-            obj.click_element_on_page(click_item, click_wait_for, by_id=True)
-        except TimeoutException:
-            print("Could not find by id, trying by class")
-            obj.find_by_id = False
-            try:
-                obj.click_element_on_page(
-                    click_item, click_wait_for, by_class=True)
-            except TimeoutException:
-                print("Could not find element by class either")
-                obj.find_by_class = False
+            obj.wait_for_element_presence()
+            if click_item is not None:
+                try:
+                    obj.click_element_on_page(click_item, click_wait_for, by_id=True)
+                    break
+                except TimeoutException:
+                    print("Could not find by id, trying by class")
+                    obj.find_by_id = False
+                    try:
+                        obj.click_element_on_page(
+                            click_item, click_wait_for, by_class=True)
+                        break
+                    except TimeoutException:
+                        obj.find_by_class = False
+                        raise TimeoutException(
+                            "Could not find element by class either")
+            else:
+                break
+        except Exception as e:
+            print(e)
+        retry += 1
     return obj
 
 

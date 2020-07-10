@@ -14,7 +14,7 @@ class SiteOne:
         site1_master_list = []
         slider = 0
         self.sel_obj = utils.create_scraper_object(
-            self.site, category, "loader_inner",)
+            self.site, category, "loader_inner")
         while True:
             if slider_test and slider > 1:
                 break
