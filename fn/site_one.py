@@ -1,4 +1,5 @@
 import utils
+import os
 
 
 class SiteOne:
@@ -7,12 +8,13 @@ class SiteOne:
         self.genre = ""
         self.slider_count = 0
         self.sel_obj = None
-
+        
+        
     def get_items_in_channels(self, category, slider_test=False):
         site1_master_list = []
         slider = 0
         self.sel_obj = utils.create_scraper_object(
-            self.site, category, "loader-inner",)
+            self.site, category, "loader_inner",)
         while True:
             if slider_test and slider > 1:
                 break
@@ -68,7 +70,7 @@ class SiteOne:
     def get_logos(self, category):
         logo_links = []
         self.sel_obj = utils.create_scraper_object(
-            self.site, category, "loader-inner")
+            self.site, category, "loader_inner")
         try:
             elements = self.sel_obj.webdriver.find_elements_by_xpath(
                 "//*[contains(@id, 'channels_')]/div/div/div/div[@class='centered']/a/img")

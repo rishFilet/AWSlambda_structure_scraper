@@ -248,7 +248,7 @@ class SiteTwo:
         if test and start is None and end is None:
             if start is None:
                 start = 0
-            if end is None and end > start:
+            if end is None or (end is not None and end > start):
                 end = round(0.2*len(shows_to_scrape))
             else:
                 end = len(shows_to_scrape)

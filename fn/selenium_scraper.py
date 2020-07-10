@@ -1,6 +1,7 @@
 import os
 import sys
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -18,13 +19,13 @@ class SeleniumScraper:
         self.find_by_class = find_by_class
         self.find_by_id = find_by_id
         self.chrome_options = webdriver.ChromeOptions()
-        #When uploading to lambda, these need to be changed to /opt/chrome/..
+        # When uploading to lambda, these need to be changed to /opt/chrome/..
         self.binary_path = os.getenv("binary_path")
         self.executable = os.getenv("executable")
         sys.path.append(self.executable)
         self.chrome_options.add_argument('--headless')
         self.chrome_options.add_argument('--no-sandbox')
-        #self.chrome_options.add_argument('--disable-gpu')
+        # self.chrome_options.add_argument('--disable-gpu')
         self.chrome_options.add_argument('--disable-dev-shm-usage')
         self.chrome_options.add_argument('--start-maximized')
         self.chrome_options.add_argument('--window-size=1920, 1080')
@@ -35,12 +36,18 @@ class SeleniumScraper:
         self.chrome_options.add_argument('--single-process')
         self.chrome_options.add_argument('--data-path=/tmp/data-path')
         self.chrome_options.add_argument('--ignore-certificate-errors')
-        #self.chrome_options.add_argument('--homedir=/tmp')
-        #self.chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
+        # self.chrome_options.add_argument('--homedir=/tmp')
+        # self.chrome_options.add_argument('--disk-cache-dir=/tmp/cache-dir')
         # self.chrome_options.add_argument(
         #     'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
-        self.chrome_options.binary_location = self.binary_path
-        self.webdriver = webdriver.Chrome(executable_path=self.executable, options=self.chrome_options)
+        if "local_remote" not in os.environ:
+            os.environ["local_remote"] = "local"
+        if os.getenv("local_remote") == "local":
+            self.chrome_options.binary_location = self.binary_path
+            self.webdriver = webdriver.Chrome(executable_path=self.executable, options=self.chrome_options)
+        elif os.getenv("local_remote") == "remote":
+            self.grid_url = f"http://{os.getenv('remote_url')}:4444/wd/hub"
+            self.webdriver = webdriver.Remote(command_executor=self.grid_url, options=self.chrome_options)
         # retrive url in headless browser
         self.webdriver.set_page_load_timeout(90)
         try:
@@ -79,7 +86,7 @@ class SeleniumScraper:
                 self.element_to_find)
         else:
             raise Exception("Specify if to find element by class or Id")
-    
+
     def check_if_displayed(self, element):
         element_to_check = self.webdriver.find_element_by_id(element)
         return element_to_check.is_displayed()

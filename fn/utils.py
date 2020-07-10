@@ -3,6 +3,7 @@ import json
 import copy
 from selenium_scraper import SeleniumScraper as sel_sc
 from datetime import datetime as dt
+from datetime import timedelta as tdelt
 import time_util as tu
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.common.exceptions import TimeoutException
@@ -65,12 +66,21 @@ def convert_scraped_data_to_json_site_one(master_list, genre, logos):
             json_format = copy.deepcopy(
                 json_read_from_file('time_slot_template.json'))
             json_format["showName"] = title
-            start_time, endtime = duration.split(
+            start_time, end_time = duration.split(
                 '-')
+            start_hr = start_time.split(":")[0].strip()
+            end_hr = end_time.split(":")[0].strip()            
             start_time_GMT = tu.convert_from_US_to_GMT(
                 current_timezone, start_time, ymd)
+            # This is a check to see if the show goes past midnight and thus 00 might be seen as less than 23, so we need to add day +1
+            if int(start_hr) > int(end_hr):
+                y, m, d = ymd
+                int_d = int(d)+1
+                end_ymd = [y, m, str(int_d)]
+            else:
+                end_ymd = ymd
             end_time_GMT = tu.convert_from_US_to_GMT(
-                current_timezone, endtime, ymd)
+                current_timezone, end_time, end_ymd)
             json_format["startTime"] = tu.convert_to_ms(start_time_GMT)
             json_format["endTime"] = tu.convert_to_ms(end_time_GMT)
             json_format["timestampKey"] = json_format["startTime"]
@@ -129,6 +139,7 @@ def convert_master_list_to_show_obj(master_list, site):
     for channel_name, item_array in channel_dict.items():
         sorted_channel = sort_channel_by_start_time(item_array)
         channel_dict[channel_name] = sorted_channel
+        check_start_end_time_dupes_chronology(sorted_channel, channel_name)
     # Outputting the channel_dict into the desired showObject template
     for channel_name, item_array in channel_dict.items():
         for item in item_array:
@@ -166,6 +177,7 @@ def filter_previous_times(current_time_formatted, end_time):
 
 def sort_channel_by_start_time(arr):
     # TODO : Add tutorial on insertion sort
+    original_arr = copy.copy(arr)
     for i in range(1, len(arr)):
         cursor = arr[i]
         pos = i-1
@@ -174,7 +186,23 @@ def sort_channel_by_start_time(arr):
             arr[pos+1] = arr[pos]
             pos -= 1
         arr[pos+1] = cursor
+    if len(original_arr) != len(remove_dupe_dicts(arr)):
+        raise Exception("Duplicates exist in site 1 data")
     return arr
+
+def check_start_end_time_dupes_chronology(dict_arr, channel):
+    timestampkeys = [info["timestampKey"] for info in dict_arr]
+    orig = len(timestampkeys)
+    # if len(set(timestampkeys)) != orig:
+    #     raise Exception(f"Duplicates exist in timestampkey for channel: {channel}")
+    ttl = [info["ttl"] for info in dict_arr]
+    for i, value in enumerate(ttl):
+        
+        if dt.fromtimestamp(timestampkeys[i]/1000) > dt.fromtimestamp(ttl[i]/1000):
+            raise Exception(f"End time is less than start time for {channel}. Start: {timestampkeys[i]}, End: {value}")
+        if dt.fromtimestamp(timestampkeys[i]/1000) < dt.fromtimestamp(0) or dt.fromtimestamp(ttl[i]/1000) < dt.fromtimestamp(0):
+            raise Exception(
+                f"Start or End time is negative {channel}. Start: {timestampkeys[i]}, End: {value}")
 
 
 def sort_img_elements(arr):

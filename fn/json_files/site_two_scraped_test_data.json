@@ -1,5 +1,6 @@
 [{
         "channel_logo": "https://content.osn....ed/OM1.png",
+        "day":"Sunday:",
         "duration": "1 Hour 30 Minutes",
         "genre": "Movies",
         "start_time": "17:35",
@@ -7,6 +8,7 @@
     },
     {
         "channel_logo": "https://content.osn....ed/OM1.png",
+        "day": "Monday:",
         "duration": "1 Hour 40 Minutes",
         "genre": "Movies",
         "start_time": "15:55",
@@ -14,6 +16,7 @@
     },
     {
         "channel_logo": "https://content.osn....ed/OMX.png",
+        "day": "Tuesday:",
         "duration": "1 Hour 45 Minutes",
         "genre": "Movies",
         "start_time": "14:00",

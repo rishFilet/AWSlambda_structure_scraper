@@ -8,6 +8,9 @@ def handler(event, context):
     if os.getenv("binary_path") is None and os.getenv("executable") is None:
         os.environ["binary_path"] = "/opt/chrome/headless-chromium"
         os.environ["executable"] = "/opt/chrome/chromedriver"
+    os.environ["local_remote"] = event["webdriver"]
+    if os.environ["local_remote"] == "remote":
+        os.environ["remote_url"] = event["remote_url"]
     site = event['site']
     test_run = bool(int(event['test_run']))
     master_list_file = '{}_master_list.json'.format(site)
@@ -62,11 +65,11 @@ if __name__ == "__main__":
     # Setting the environment variables for the chromedriver and headless-chromium
     os.environ["binary_path"] = os.getcwd()+"/venv/chrome/headless-chromium"
     os.environ["executable"] = os.getcwd()+"/venv/chrome/chromedriver"
-    #handler({"site": "site1", "output": "", "test_run": "1"}, None)
-    handler({"site": "site2", "output": "", "test_run": "1", "start":"0", "end":"600", "max_workers":"60", "batch_size":"50"}, None)
-    handler({"site": "site2", "output": "", "test_run": "1",
-             "start": "601", "end": "1200"}, None)
-    handler({"site": "site2", "output": "", "test_run": "1",
-             "start": "1201", "end": "1800"}, None)
-    handler({"site": "site2", "output": "", "test_run": "1",
-             "start": "1801", "end": "3000"}, None)
+    handler({"site": "site1", "output": "", "test_run": "0", "webdriver": "local"}, None)
+    # handler({"site": "site2", "output": "", "test_run": "1", "start":"0", "end":"100", "max_workers":"20", "batch_size":"20"}, None)
+    # handler({"site": "site2", "output": "", "test_run": "1",
+    #          "start": "601", "end": "1200"}, None)
+    # handler({"site": "site2", "output": "", "test_run": "1",
+    #          "start": "1201", "end": "1800"}, None)
+    # handler({"site": "site2", "output": "", "test_run": "1",
+    #          "start": "1801", "end": "3000"}, None)
