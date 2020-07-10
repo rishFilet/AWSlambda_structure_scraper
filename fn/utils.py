@@ -203,9 +203,11 @@ def sort_channel_by_start_time(arr):
 
 def check_start_end_time_dupes_chronology(dict_arr, channel):
     timestampkeys = [info["timestampKey"] for info in dict_arr]
-    orig = len(timestampkeys)
-    # if len(set(timestampkeys)) != orig:
-    #     raise Exception(f"Duplicates exist in timestampkey for channel: {channel}")
+    ttls = [info["ttl"] for info in dict_arr]
+    orig_tsk = len(timestampkeys)
+    orig_ttl = len(ttls)
+    if len(set(timestampkeys)) != orig_tsk or len(set(ttls)) != orig_ttl:
+        raise Exception(f"Duplicates exist in timestampkey for channel: {channel}")
     ttl = [info["ttl"] for info in dict_arr]
     for i, value in enumerate(ttl):
         
