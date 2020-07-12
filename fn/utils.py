@@ -203,14 +203,15 @@ def sort_channel_by_start_time(arr):
 
 def check_start_end_time_dupes_chronology(dict_arr, channel):
     timestampkeys = [info["timestampKey"] for info in dict_arr]
-    ttls = [info["ttl"] for info in dict_arr]
-    orig_tsk = len(timestampkeys)
-    orig_ttl = len(ttls)
-    if len(set(timestampkeys)) != orig_tsk or len(set(ttls)) != orig_ttl:
-        raise Exception(f"Duplicates exist in timestampkey for channel: {channel}")
     ttl = [info["ttl"] for info in dict_arr]
+    dupe_tsks = [x for x in timestampkeys if timestampkeys.count(x) > 1]
+    dupe_ttls = [x for x in ttl if ttl.count(x) > 1] # TODO: Try this on lambda to replicate the duplicates issue to see if it happens
+    if len(dupe_tsks) > 0:
+        raise Exception(f"Duplicates exist in timestampkey for channel: {channel}\n Original List: {dupe_tsks}\n Set List: {set(dupe_tsks)}")
+    if len(dupe_ttls) > 0:
+        raise Exception(
+            f"Duplicates exist in ttl for channel: {channel}\n Original List: {dupe_ttls}\n Set List: {set(dupe_ttls)}")
     for i, value in enumerate(ttl):
-        
         if dt.fromtimestamp(timestampkeys[i]/1000) > dt.fromtimestamp(ttl[i]/1000):
             raise Exception(f"End time is less than start time for {channel}. Start: {timestampkeys[i]}, End: {value}")
         if dt.fromtimestamp(timestampkeys[i]/1000) < dt.fromtimestamp(0) or dt.fromtimestamp(ttl[i]/1000) < dt.fromtimestamp(0):

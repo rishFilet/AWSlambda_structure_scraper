@@ -15,6 +15,8 @@ class SiteOne:
         slider = 0
         self.sel_obj = utils.create_scraper_object(
             self.site, category, "loader_inner")
+        slider_count = self.sel_obj.webdriver.find_elements_by_xpath(
+            "//*[contains(@id, 'ruler_channels_')]")
         while True:
             if slider_test and slider > 1:
                 break
@@ -39,8 +41,11 @@ class SiteOne:
                     "Collected {} items for channel/slider {}".format(now_or_upcoming_count, slider))
                 site1_master_list.append(channel_list)
             except:
-                print("No more sliders")
-                break
+                if slider < len(slider_count)-1:
+                    print(f"-------> Slider empty or missing data for {slider}")
+                else:
+                    print("No more sliders")
+                    break
         return site1_master_list
 
     def get_current_page(self, sel_obj_arg=None, category=None):
