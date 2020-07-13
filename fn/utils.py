@@ -198,14 +198,20 @@ def sort_channel_by_start_time(arr):
             pos -= 1
         arr[pos+1] = cursor
     if len(original_arr) != len(remove_dupe_dicts(arr)):
-        raise Exception("Duplicates exist in site 1 data")
+        dupe_items_to_raise_exception = [x for x in arr if arr.count(x) > 2]
+        if dupe_items_to_raise_exception:
+            raise Exception(
+                f"Duplicates exist in site 1 data {dupe_items_to_raise_exception}")
+        dupe_items_to_delete = [x for x in arr if arr.count(x) == 2]
+        print(f"Deleting duplicated items: {list(set(dupe_items_to_delete))}")
+        arr = list(set(arr))
     return arr
 
 def check_start_end_time_dupes_chronology(dict_arr, channel):
     timestampkeys = [info["timestampKey"] for info in dict_arr]
     ttl = [info["ttl"] for info in dict_arr]
     dupe_tsks = [x for x in timestampkeys if timestampkeys.count(x) > 1]
-    dupe_ttls = [x for x in ttl if ttl.count(x) > 1] # TODO: Try this on lambda to replicate the duplicates issue to see if it happens
+    dupe_ttls = [x for x in ttl if ttl.count(x) > 1]
     if len(dupe_tsks) > 0:
         raise Exception(f"Duplicates exist in timestampkey for channel: {channel}\n Original List: {dupe_tsks}\n Set List: {set(dupe_tsks)}")
     if len(dupe_ttls) > 0:
