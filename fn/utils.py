@@ -197,15 +197,16 @@ def sort_channel_by_start_time(arr):
             arr[pos+1] = arr[pos]
             pos -= 1
         arr[pos+1] = cursor
-    if len(original_arr) != len(remove_dupe_dicts(arr)):
+    remove_dupe_dicts_array = remove_dupe_dicts(arr)
+    if len(original_arr) != len(remove_dupe_dicts_array):
         dupe_items_to_raise_exception = [x for x in arr if arr.count(x) > 2]
         if dupe_items_to_raise_exception:
             raise Exception(
                 f"Duplicates exist in site 1 data {dupe_items_to_raise_exception}")
         dupe_items_to_delete = [x for x in arr if arr.count(x) == 2]
-        print(f"Deleting duplicated items: {list(set(dupe_items_to_delete))}")
-        arr = list(set(arr))
-    return arr
+        no_dupes = remove_dupe_dicts(dupe_items_to_delete)
+        print(f"Deleting duplicated items: {no_dupes}")
+    return remove_dupe_dicts_array
 
 def check_start_end_time_dupes_chronology(dict_arr, channel):
     timestampkeys = [info["timestampKey"] for info in dict_arr]
