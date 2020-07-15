@@ -211,7 +211,7 @@ def check_start_end_time_dupes_chronology(dict_arr, channel):
     ttl = [info["ttl"] for info in dict_arr]
     dupe_tsks = [x for x in timestampkeys if timestampkeys.count(x) > 1]
     dupe_ttls = [x for x in ttl if ttl.count(x) > 1]
-    if dupe_tsks > 0:
+    if dupe_tsks:
         print(
             f"Duplicates exist in timestampkey for channel: {channel}\n Original List: {dupe_tsks}\n Set List: {set(dupe_tsks)}")
         dupe_list_w_one_of = list(set(dupe_tsks))
