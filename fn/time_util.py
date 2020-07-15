@@ -8,6 +8,7 @@
 
 import logging
 from datetime import datetime as dt
+from datetime import timedelta
 from pytz import timezone, reference
 from pytz import all_timezones_set, common_timezones_set
 from pytz.exceptions import UnknownTimeZoneError
@@ -33,6 +34,17 @@ def get_current_timezone():
         current_timezone = timezone(next(generator_tz))
     return current_timezone
 
+
+def get_ymd_plus_day():
+    d = dt.now() + timedelta(days=1)
+    year, month, day = d.strftime('%Y,%m,%d').split(',')
+    return [year, month, day]
+
+def get_ymd_minus_day():
+    d = dt.now() - timedelta(days=1)
+    year, month, day = d.strftime('%Y,%m,%d').split(',')
+    return [year, month, day]
+
 def get_ymd():
     year, month, day = dt.now().strftime('%Y,%m,%d').split(',')
     return [year, month, day]
@@ -41,13 +53,13 @@ def get_hm():
     hour, minute = dt.now().strftime('%H,%M').split(',')
     return "{}:{}".format(hour, minute)
 
-#call the function get_ymd() to get the year, month and day for this function
 def convert_from_US_to_GMT(current_timezone, time_to_convert, ymd):
     year, month, day = ymd
     hour, minute = time_to_convert.split(':')
-    time_to_convert_formatted = dt.strptime('{0}-{1}-{2} {3}:{4}:{5}.{6}'.format(year, month, day, hour, minute, 0, 0), '%Y-%m-%d %H:%M:%S.%f')
-    GMT_timezone = timezone('GMT')
-    return current_timezone.localize(time_to_convert_formatted).astimezone(GMT_timezone)
+    time_to_convert_formatted = dt.strptime('{0}-{1}-{2} {3}:{4}:{5}'.format(year, month, day, hour, minute, 0), '%Y-%m-%d %H:%M:%S')
+    # timezone_timed = timezone('GMT')
+    # current_timezone.localize(time_to_convert_formatted).astimezone(timezone_timed)
+    return time_to_convert_formatted
 
 def convert_to_ms(formatted_time_to_convert):
     string_formatted_time = str(formatted_time_to_convert)

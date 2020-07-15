@@ -68,7 +68,7 @@ def convert_scraped_data_to_json_site_one(master_list, genre, logos):
         except IndexError:
             print("Could not find any logos")
             channel_logo = ''
-        for time_slot in channel:
+        for index, time_slot in enumerate(channel):
             item = time_slot.split('\n')
             title = item[2].replace('\t', '')
             if genre is None:
@@ -80,14 +80,16 @@ def convert_scraped_data_to_json_site_one(master_list, genre, logos):
             start_time, end_time = duration.split(
                 '-')
             start_hr = start_time.split(":")[0].strip()
-            end_hr = end_time.split(":")[0].strip()            
+            end_hr = end_time.split(":")[0].strip()
+            if int(start_hr) > int(end_hr) and index == 0:
+                start_ymd = tu.get_ymd_minus_day()
+            else:
+                start_ymd = ymd
             start_time_GMT = tu.convert_from_US_to_GMT(
-                current_timezone, start_time, ymd)
+                current_timezone, start_time, start_ymd)
             # This is a check to see if the show goes past midnight and thus 00 might be seen as less than 23, so we need to add day +1
-            if int(start_hr) > int(end_hr):
-                y, m, d = ymd
-                int_d = int(d)+1
-                end_ymd = [y, m, str(int_d)]
+            if int(start_hr) > int(end_hr) and index > 0:
+                end_ymd = tu.get_ymd_plus_day()
             else:
                 end_ymd = ymd
             end_time_GMT = tu.convert_from_US_to_GMT(
@@ -103,6 +105,7 @@ def convert_scraped_data_to_json_site_one(master_list, genre, logos):
             json_format["ttl"] = json_format["endTime"]
             json_format["duration"] = json_format["ttl"] - \
                 json_format["timestampKey"]
+            #if dt.fromtimestamp(json_format["ttl"]/1000) > dt.fromtimestamp(dt.now().timestamp()/1000):
             all_show_objects.append(json_format)
     return all_show_objects
 
@@ -134,7 +137,7 @@ def convert_scraped_data_to_json_site_two(shows_list):
             all_show_objects.append(json_format)
     return all_show_objects
 
-
+#TODO: Filter by start time vs now time
 def convert_master_list_to_show_obj(master_list, site):
     channel_dict = {}
     show_objects = []
@@ -148,9 +151,11 @@ def convert_master_list_to_show_obj(master_list, site):
             channel_dict[item["channel"]].append(item)
     # Sorting each channel by start time
     for channel_name, item_array in channel_dict.items():
-        sorted_channel = sort_channel_by_start_time(item_array)
+        remove_dupes_channel_dict = check_start_end_time_dupes_chronology(
+            item_array, channel_name)
+        sorted_channel = sort_channel_by_start_time(remove_dupes_channel_dict)
         channel_dict[channel_name] = sorted_channel
-        check_start_end_time_dupes_chronology(sorted_channel, channel_name)
+        
     # Outputting the channel_dict into the desired showObject template
     for channel_name, item_array in channel_dict.items():
         for item in item_array:
@@ -188,25 +193,18 @@ def filter_previous_times(current_time_formatted, end_time):
 
 def sort_channel_by_start_time(arr):
     # TODO : Add tutorial on insertion sort
-    original_arr = copy.copy(arr)
     for i in range(1, len(arr)):
         cursor = arr[i]
         pos = i-1
-
-        while pos >= 0 and cursor["timestampKey"] < arr[pos]["timestampKey"]:
+        while pos >= 0 and dt.fromtimestamp(cursor["timestampKey"]/1000) < dt.fromtimestamp(arr[pos]["timestampKey"]/1000):
             arr[pos+1] = arr[pos]
             pos -= 1
         arr[pos+1] = cursor
-    remove_dupe_dicts_array = remove_dupe_dicts(arr)
-    if len(original_arr) != len(remove_dupe_dicts_array):
         dupe_items_to_raise_exception = [x for x in arr if arr.count(x) > 2]
         if dupe_items_to_raise_exception:
             raise Exception(
-                f"Duplicates exist in site 1 data {dupe_items_to_raise_exception}")
-        dupe_items_to_delete = [x for x in arr if arr.count(x) == 2]
-        no_dupes = remove_dupe_dicts(dupe_items_to_delete)
-        print(f"Deleting duplicated items: {no_dupes}")
-    return remove_dupe_dicts_array
+                f"More than 2 Duplicates exist in site 1 data {dupe_items_to_raise_exception}")
+    return arr
 
 def check_start_end_time_dupes_chronology(dict_arr, channel):
     timestampkeys = [info["timestampKey"] for info in dict_arr]
@@ -214,17 +212,43 @@ def check_start_end_time_dupes_chronology(dict_arr, channel):
     dupe_tsks = [x for x in timestampkeys if timestampkeys.count(x) > 1]
     dupe_ttls = [x for x in ttl if ttl.count(x) > 1]
     if len(dupe_tsks) > 0:
-        raise Exception(f"Duplicates exist in timestampkey for channel: {channel}\n Original List: {dupe_tsks}\n Set List: {set(dupe_tsks)}")
+        print(
+            f"Duplicates exist in timestampkey for channel: {channel}\n Original List: {dupe_tsks}\n Set List: {set(dupe_tsks)}")
+        dupe_list_w_one_of = list(set(dupe_tsks))
+        duped_channel = []
+        for duped_show_timestampkey in dupe_list_w_one_of:
+            dupe_count = 0
+            for show in dict_arr:
+                if show["timestampKey"] == duped_show_timestampkey:
+                    duped_channel.append(show)
+                    dupe_count += 1
+                if dupe_count > 1:
+                    dict_arr.remove(show) 
+            print(f"Duplicated channels: {duped_channel}")
+        #raise Exception(f"Duplicates exist in timestampkey for channel: {channel}\n Original List: {dupe_tsks}\n Set List: {set(dupe_tsks)}")
     if len(dupe_ttls) > 0:
-        raise Exception(
+        print(
             f"Duplicates exist in ttl for channel: {channel}\n Original List: {dupe_ttls}\n Set List: {set(dupe_ttls)}")
+        dupe_list_w_one_of = list(set(dupe_ttls))
+        duped_channel = []
+        for duped_show_ttls in dupe_list_w_one_of:
+            dupe_count = 0
+            for show in dict_arr:
+                if show["ttl"] == duped_show_ttls:
+                    duped_channel.append(show)
+                    dupe_count += 1
+                if dupe_count > 1:
+                    dict_arr.remove(show)
+            print(f"Duplicated channels: {duped_channel}")
+    #    raise Exception(
+    #         f"Duplicates exist in ttl for channel: {channel}\n Original List: {dupe_ttls}\n Set List: {set(dupe_ttls)}")
     for i, value in enumerate(ttl):
         if dt.fromtimestamp(timestampkeys[i]/1000) > dt.fromtimestamp(ttl[i]/1000):
             raise Exception(f"End time is less than start time for {channel}. Start: {timestampkeys[i]}, End: {value}")
         if dt.fromtimestamp(timestampkeys[i]/1000) < dt.fromtimestamp(0) or dt.fromtimestamp(ttl[i]/1000) < dt.fromtimestamp(0):
             raise Exception(
                 f"Start or End time is negative {channel}. Start: {timestampkeys[i]}, End: {value}")
-
+    return dict_arr
 
 def sort_img_elements(arr):
     # Insertion sort algorithm
@@ -240,6 +264,6 @@ def sort_img_elements(arr):
 def remove_dupe_dicts(list_to_check):
     list_of_strings = [json.dumps(d, sort_keys=True)
                         for d in list_to_check]
-
+    #Using the set here will cause issues with order of the elements
     list_of_strings = set(list_of_strings)
     return [json.loads(s) for s in list_of_strings]

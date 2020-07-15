@@ -33,10 +33,8 @@ class SiteOne:
                 now_or_upcoming_count = 0
                 for item in element_items:
                     text = item.get_attribute('textContent')
-                    location = item.location['x']
-                    if location >= 121:
-                        now_or_upcoming_count += 1
-                        channel_list.append(text)
+                    now_or_upcoming_count += 1
+                    channel_list.append(text)
                 print(
                     "Collected {} items for channel/slider {}".format(now_or_upcoming_count, slider))
                 site1_master_list.append(channel_list)
@@ -81,8 +79,9 @@ class SiteOne:
                 "//*[contains(@id, 'channels_')]/div/div/div/div[@class='centered']/a/img")
             sorted_elements = utils.sort_img_elements(elements)
             for img in sorted_elements:
-                logo_url = img.get_attribute("src")
-                logo_links.append(logo_url)
+                if img.location["y"] > 0 and img.location["x"] > 0:
+                    logo_url = img.get_attribute("src")
+                    logo_links.append(logo_url)
         except:
             print("Could not find element(s) with that xpath ")
         return logo_links
